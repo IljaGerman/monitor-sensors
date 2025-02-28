@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: monitor-sensors-ms
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:54322/monitor_sensors}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    hikari:
+      maximum-pool-size: 10
+      idle-timeout: 10000
+      connection-timeout: 20000
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: none
+    open-in-view: false
+  liquibase:
+    change-log: db/migration/changelog-master.yaml
+app:
+  version:
+    0.0.1
+  description:
+    Monitor sensors app

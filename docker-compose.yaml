@@ -1,0 +1,50 @@
+version: '3.8'
+
+volumes:
+  monitor-sensors-db-data:
+    driver: local
+
+networks:
+  monitor-sensors-network:
+    driver: bridge
+
+services:
+  postgres-db:
+    image: postgres:15
+    ports:
+      - '54322:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - monitor-sensors-db-data:/var/lib/postgresql/data
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    networks:
+      - monitor-sensors-network
+
+  monitor-sensors-ms:
+    build:
+      context: monitor-sensors-ms
+    container_name: monitor-sensors-ms
+    networks:
+      - monitor-sensors-network
+    depends_on:
+      - postgres-db
+    env_file:
+      - monitor-sensors-ms\.env
+    ports:
+      - '8080:8080'
+
+  statistics-ms:
+    build:
+      context: statistics-ms
+    container_name: statistics-ms
+    networks:
+      - monitor-sensors-network
+    depends_on:
+      - postgres-db
+      - monitor-sensors-ms
+    env_file:
+      - statistics-ms\.env
+    ports:
+      - '8081:8080'

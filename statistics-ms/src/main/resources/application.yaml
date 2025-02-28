@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: statistics-ms
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:54322/sensor_statistics}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    hikari:
+      maximum-pool-size: 10
+      idle-timeout: 10000
+      connection-timeout: 20000
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: none
+    open-in-view: false
+  liquibase:
+    change-log: db/migration/changelog-master.yaml
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+sensors:
+  service:
+    path: ${SENSORS_PATH:http://localhost:8081}
+    username: ${SENSORS_USER:viewer}
+    password: ${SENSORS_PASSWORD:1234}
